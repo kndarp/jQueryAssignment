@@ -274,7 +274,7 @@ $(function(){
 
   var divTable = {
     container : $("section.active").children().filter("div.jsonTable"),
-    //tableData : [],
+    tableData : [],
     init      : function(){
 
     var   file     = this.container.data("file");
@@ -315,7 +315,7 @@ $(function(){
       var idf = 'identifier'
       keys.forEach(function(d){
         tRow.prepend($('<td></td>').append($('<input></input>').attr({
-            id: idf+1,
+            id: d,
             placeholder: d,
             class : 'form-control'
         })));
@@ -342,7 +342,36 @@ $(function(){
     caller.closest("tr").remove();
     console.log(JSON.stringify(data));
     // Now update the data-index attributes of the remaining rows.
+
     plotThefts(data);
+
+
+  });
+
+  $('div.jsonTable').on('click','button#add',function(e){
+    var caller    = $(this),
+        obNewData = {},
+        inputs    = $('div.jsonTable input'),
+        data      = divTable.tableData,
+        tRow      = $('<tr></tr>');
+
+
+        inputs.each(function(input){
+          obNewData[$(this).attr('id')] = $(this).val();
+          $(this).val('');
+        });
+        console.log(obNewData);
+        data.push(obNewData);
+        console.log(JSON.stringify(data));
+
+        Object.keys(obNewData).reverse().forEach(function(field){
+          tRow.prepend($("<td></td>").text(obNewData[field]));
+        });
+          tRow.append($("<td></td>").append($("<button type = 'button' class = 'btn btn-xs btn-danger remove' ></button>").append($("<span></span>").attr("class","glyphicon glyphicon-remove"))))  ;
+          caller.closest('tr').before(tRow);
+          caller.attr('disabled','disabled');
+        plotThefts(data);
+
 
   });
 
